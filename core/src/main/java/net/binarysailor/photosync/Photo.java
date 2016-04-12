@@ -32,4 +32,8 @@ public class Photo {
     public String getStorageRelativePath() {
         return relativePath;
     }
+
+    public long getDiskSize() {
+        return ioFile.length();
+    }
 }
