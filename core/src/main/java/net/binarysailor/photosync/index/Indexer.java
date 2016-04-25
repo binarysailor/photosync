@@ -5,8 +5,11 @@ import net.binarysailor.photosync.Directory;
 import net.binarysailor.photosync.Photo;
 import net.binarysailor.photosync.Storage;
 import net.binarysailor.photosync.index.fsstored.IndexException;
+import org.apache.commons.logging.LogFactory;
 
 import javax.annotation.Nonnull;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by binarysailor on 11/04/2016.
@@ -14,42 +17,66 @@ import javax.annotation.Nonnull;
 class Indexer implements Runnable {
     private final Storage storage;
     private final Index index;
+    private final HashCalculator hashCalculator;
     private final IndexingCommand command;
 
-    public Indexer(final Storage storage, final Index index, final IndexingCommand command) {
+    public Indexer(final Storage storage, final Index index, final HashCalculator hashCalculator, final IndexingCommand command) {
         this.storage = storage;
         this.index = index;
+        this.hashCalculator = hashCalculator;
         this.command = command;
     }
 
     @Override
     public void run() {
 
-        @Nonnull Directory directory = MoreObjects.firstNonNull(command.getStartingPoint(), storage.getRoot());
-        final int maxBatchSize = MoreObjects.firstNonNull(command.getMaxBatchSize(), 100 * 1000);
+        final @Nonnull Counter counter = createCounter();
+        final @Nonnull Directory startingDirectory = createStartingDirectory();
 
-        int count = 0;
-        while (count < maxBatchSize && directory != null) {
-            final Photo[] photos = directory.getPhotos();
-            for (final Photo photo : photos) {
-                String hash = hash(photo);
-                try {
-                    index.storeHash(photo, hash);
-                } catch (final IndexException e) {
-                    e.printStackTrace(); // TODO
-                }
+        final Queue<Directory> dirQueue = new LinkedList<>();
+        dirQueue.add(startingDirectory);
 
-                count++;
-                if (count >= maxBatchSize) {
-                    break;
-                }
-            }
+        // Breadth First Search through the directory tree
 
-            directory = null; // TODO
+        while (counter.shouldContinue() && !dirQueue.isEmpty()) {
+            final Directory currentDirectory = dirQueue.poll();
+
+            enqueueSubdirectories(dirQueue, currentDirectory);
+
+            hashPhotos(currentDirectory, counter);
         }
     }
 
-    private String hash(final Photo photo) {
-        return String.valueOf(photo.getDiskSize());
+    private Counter createCounter() {
+        final int maxBatchSize = MoreObjects.firstNonNull(command.getMaxBatchSize(), 100 * 1000);
+        return new Counter(maxBatchSize);
+    }
+
+    private Directory createStartingDirectory() {
+        return MoreObjects.firstNonNull(command.getStartingPoint(), storage.getRoot());
+    }
+
+    private void enqueueSubdirectories(final Queue<Directory> dirQueue, final Directory currentDirectory) {
+        for (final Directory child : currentDirectory.getSubdirectories()) {
+            dirQueue.add(child);
+        }
+    }
+
+    private void hashPhotos(final Directory currentDirectory, final Counter counter) {
+        final Photo[] photos = currentDirectory.getPhotos();
+        for (final Photo photo : photos) {
+            String hash = hashCalculator.calculateHash(photo);
+            try {
+                index.storeHash(photo, hash);
+            } catch (final IndexException e) {
+                LogFactory.getLog(getClass()).warn(e, e);
+            }
+
+            counter.increment();
+
+            if (!counter.shouldContinue()) {
+                break;
+            }
+        }
     }
 }

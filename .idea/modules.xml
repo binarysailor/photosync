@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/photosync.iml" filepath="$PROJECT_DIR$/photosync.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Photosync.iml" filepath="$PROJECT_DIR$/Photosync.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/Photosync Core.iml" filepath="$PROJECT_DIR$/core/Photosync Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
     </modules>
   </component>
 </project>

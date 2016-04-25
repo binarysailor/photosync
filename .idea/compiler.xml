@@ -23,11 +23,18 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="core" />
+        <module name="Photosync Core" />
+        <module name="Photosync Web" />
+        <module name="web" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="core" target="1.7" />
+      <module name="Photosync" target="1.5" />
       <module name="photosync" target="1.5" />
+      <module name="Photosync Core" target="1.7" />
+      <module name="Photosync Web" target="1.7" />
+      <module name="web" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

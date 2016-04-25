@@ -8,7 +8,8 @@ import net.binarysailor.photosync.Storage;
 import net.binarysailor.photosync.index.Index;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
@@ -30,7 +31,7 @@ public class FilesystemIndex implements Index {
     public void storeHash(final Photo photo, final String hash) throws IndexException {
         File hashFile = getHashFile(hash);
         try {
-            Files.append(photo.getStorageRelativePath() + "\n", hashFile, Charset.forName("UTF-8"));
+            Files.append(photo.getLocation() + "\n", hashFile, Charset.forName("UTF-8"));
         } catch (IOException e) {
             throw new IndexException(e);
         }
