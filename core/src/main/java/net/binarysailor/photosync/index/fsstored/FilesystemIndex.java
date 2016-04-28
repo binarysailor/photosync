@@ -1,10 +1,7 @@
 package net.binarysailor.photosync.index.fsstored;
 
 import com.google.common.io.Files;
-import net.binarysailor.photosync.DirectoryNotFoundException;
-import net.binarysailor.photosync.IsDirectoryFilter;
-import net.binarysailor.photosync.Photo;
-import net.binarysailor.photosync.Storage;
+import net.binarysailor.photosync.*;
 import net.binarysailor.photosync.index.Index;
 
 import javax.annotation.Nullable;
@@ -28,35 +25,37 @@ public class FilesystemIndex implements Index {
     }
 
     @Override
-    public void storeHash(final Photo photo, final String hash) throws IndexException {
+    public void storeHash(final Directory directory, final Photo photo, final String hash) throws IndexException {
         File hashFile = getHashFile(hash);
         try {
-            Files.append(photo.getLocation() + "\n", hashFile, Charset.forName("UTF-8"));
+            Files.append(Locations.getFullPhotoLocation(directory, photo) + "\n", hashFile, Charset.forName("UTF-8"));
         } catch (IOException e) {
             throw new IndexException(e);
         }
     }
 
     @Override
-    public @Nullable Photo findPhotoByHash(final String hash) throws IndexException {
-        final Photo photo;
+    public @Nullable
+    FileStoragePointer findPhotoByHash(final String hash) throws IndexException {
+        final FileStoragePointer pointer;
 
         final File hashFile = getHashFile(hash);
         if (hashFile.exists()) {
             try {
-                String photoFilePath = Files.readFirstLine(hashFile, Charset.forName("UTF-8"));
-                photo = storage.findPhoto(photoFilePath);
-                if (photo == null) {
-                    removeHash(hash);
+                String photoPath = Files.readFirstLine(hashFile, Charset.forName("UTF-8"));
+                if (photoPath != null) {
+                    pointer = null; // TODO Locations.createRelative(photoPath);
+                } else {
+                    pointer = null;
                 }
             } catch (IOException e) {
                 throw new IndexException(e);
             }
         } else {
-            photo = null;
+            pointer = null;
         }
 
-        return photo;
+        return pointer;
     }
 
     @Override

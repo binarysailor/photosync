@@ -8,15 +8,16 @@ import java.nio.file.Paths;
  * Created by binarysailor on 11/04/2016.
  */
 class FileSystemPhoto implements Photo {
-    final FileSystemStorage storage;
+    private final FileSystemStorage storage;
+    private final FileSystemDirectory directory;
     private final File ioFile;
 
-    public FileSystemPhoto(final FileSystemStorage storage, final File file) {
+    public FileSystemPhoto(final FileSystemStorage storage, final FileSystemDirectory directory, final File file) {
         this.storage = storage;
+        this.directory = directory;
         this.ioFile = file;
     }
 
-    @Override
     public String getLocation() {
         final Path rootPath = Paths.get(storage.getRootPath());
         final Path photoPath = Paths.get(ioFile.getAbsolutePath());
@@ -25,7 +26,17 @@ class FileSystemPhoto implements Photo {
     }
 
     @Override
+    public String getName() {
+        return ioFile.getName();
+    }
+
+    @Override
     public long getSize() {
         return ioFile.length();
+    }
+
+    @Override
+    public FileSystemDirectory getDirectory() {
+        return directory;
     }
 }

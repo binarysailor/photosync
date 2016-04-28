@@ -16,11 +16,17 @@ class FileSystemDirectory implements Directory {
     private static final FileFilter IS_PHOTO_FILTER = new IsPhotoFilter();
 
     private final FileSystemStorage storage;
+    private final FileSystemDirectory parent;
     private final @Nonnull File ioDirectory;
 
 
-    FileSystemDirectory(final FileSystemStorage storage, final @Nonnull String path) throws DirectoryNotFoundException {
+    public static FileSystemDirectory createRoot(final FileSystemStorage storage, final String absoluteDiskPath) throws DirectoryNotFoundException {
+        return new FileSystemDirectory(storage, absoluteDiskPath);
+    }
+
+    private FileSystemDirectory(final FileSystemStorage storage, final @Nonnull String path) throws DirectoryNotFoundException {
         this.storage = storage;
+        this.parent = null;
         this.ioDirectory = new File(path);
 
         assertDirectoryExists();
@@ -28,6 +34,7 @@ class FileSystemDirectory implements Directory {
 
     FileSystemDirectory(final FileSystemStorage storage, final @Nonnull FileSystemDirectory parent, final @Nonnull String shortName) throws DirectoryNotFoundException {
         this.storage = storage;
+        this.parent = parent;
 
         final String path = parent.getFileSystemPath() + File.pathSeparator + shortName;
         ioDirectory = new File(path);
@@ -51,6 +58,11 @@ class FileSystemDirectory implements Directory {
         return toPhotos(files);
     }
 
+    @Override
+    public Directory getParent() {
+        return parent;
+    }
+
     private FileSystemDirectory[] toDirectories(final @Nonnull File[] files) {
         final Collection<FileSystemDirectory> resultCollection = new ArrayList<>(files.length);
 
@@ -69,7 +81,7 @@ class FileSystemDirectory implements Directory {
         final Collection<Photo> resultCollection = new ArrayList<>(files.length);
 
         for (final File file : files) {
-            resultCollection.add(new FileSystemPhoto(storage, file));
+            resultCollection.add(new FileSystemPhoto(storage, this, file));
         }
 
         return resultCollection.toArray(new Photo[0]);

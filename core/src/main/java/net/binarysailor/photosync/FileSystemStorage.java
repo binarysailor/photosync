@@ -1,5 +1,7 @@
 package net.binarysailor.photosync;
 
+import com.google.common.base.Joiner;
+
 import java.io.File;
 
 /**
@@ -10,7 +12,7 @@ class FileSystemStorage implements Storage {
     private final FileSystemDirectory root;
 
     public FileSystemStorage(final String rootDirectoryPath) throws DirectoryNotFoundException {
-        this.root = new FileSystemDirectory(this, rootDirectoryPath);
+        this.root = FileSystemDirectory.createRoot(this, rootDirectoryPath);
     }
 
     @Override
@@ -23,12 +25,34 @@ class FileSystemStorage implements Storage {
     }
 
     @Override
-    public Photo findPhoto(final String location) {
-        final File file = new File(getRootPath() + File.pathSeparator + location);
+    public Photo findPhoto(final FileStoragePointer pointer) {
+        final File file = new File(
+                getRootPath()
+                        + File.pathSeparator
+                        + toFileSystemDirectoryPath(pointer.getDirectoryPointer())
+                        + pointer.getFileName());
         if (IsPhotoFilter.isPhoto(file)) {
-            return new FileSystemPhoto(this, file);
+            try {
+                final FileSystemDirectory directory = buildFileSystemDirectory(pointer.getDirectoryPointer());
+                return new FileSystemPhoto(this, directory, file);
+            } catch (final DirectoryNotFoundException e) {
+                return null;
+            }
         } else {
             return null;
         }
+    }
+
+    private String toFileSystemDirectoryPath(final DirectoryStoragePointer directoryPointer) {
+        return Joiner.on(File.pathSeparatorChar).join(directoryPointer.getDirectoryNames());
+    }
+
+    private FileSystemDirectory buildFileSystemDirectory(final DirectoryStoragePointer pointer) throws DirectoryNotFoundException {
+        FileSystemDirectory directory = root;
+        for (final String directoryName : pointer.getDirectoryNames()) {
+            directory = new FileSystemDirectory(this, directory, directoryName);
+        }
+
+        return directory;
     }
 }

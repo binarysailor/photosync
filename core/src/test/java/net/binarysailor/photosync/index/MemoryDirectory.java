@@ -11,11 +11,13 @@ import java.util.List;
  */
 class MemoryDirectory implements Directory {
 
+    private final Directory parent;
     private final String name;
     private final List<MemoryDirectory> subdirectories = new LinkedList<>();
     private final List<MemoryPhoto> photos = new LinkedList<>();
 
-    MemoryDirectory(final String name) {
+    MemoryDirectory(final MemoryDirectory parent, final String name) {
+        this.parent = parent;
         this.name = name;
     }
 
@@ -24,8 +26,15 @@ class MemoryDirectory implements Directory {
         return name;
     }
 
-    public void addSubdirectory(final MemoryDirectory subdirectory) {
+    @Override
+    public Directory getParent() {
+        return parent;
+    }
+
+    public MemoryDirectory addSubdirectory(final String subdirectoryName) {
+        final MemoryDirectory subdirectory = new MemoryDirectory(this, subdirectoryName);
         subdirectories.add(subdirectory);
+        return subdirectory;
     }
 
     @Override

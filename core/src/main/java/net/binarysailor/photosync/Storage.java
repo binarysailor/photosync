@@ -7,5 +7,5 @@ public interface Storage {
 
     Directory getRoot();
 
-    Photo findPhoto(String location);
+    Photo findPhoto(FileStoragePointer photoPointer);
 }

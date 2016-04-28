@@ -1,6 +1,8 @@
 package net.binarysailor.photosync.index;
 
+import com.google.common.base.Splitter;
 import net.binarysailor.photosync.Directory;
+import net.binarysailor.photosync.FileStoragePointer;
 import net.binarysailor.photosync.Photo;
 import net.binarysailor.photosync.Storage;
 
@@ -9,7 +11,7 @@ import net.binarysailor.photosync.Storage;
  */
 class MemoryStorage implements Storage {
 
-    private final MemoryDirectory root = new MemoryDirectory("");
+    private final MemoryDirectory root = new MemoryDirectory(null, "");
 
     @Override
     public Directory getRoot() {
@@ -17,20 +19,37 @@ class MemoryStorage implements Storage {
     }
 
     @Override
-    public Photo findPhoto(final String location) {
+    public Photo findPhoto(final FileStoragePointer location) {
         Directory currentDirectory = root;
 
-        final String[] pathParts = location.split("/");
-        if (pathParts.length > 1) {
-            for (int i = 0; i < pathParts.length - 1; i++) {
-                currentDirectory = findSubdirectory(currentDirectory, pathParts[i]);
-                if (currentDirectory == null) {
-                    return null;
-                }
+        for (final String directoryName : location.getDirectoryPointer().getDirectoryNames()) {
+            currentDirectory = findSubdirectory(currentDirectory, directoryName);
+            if (currentDirectory == null) {
+                return null;
             }
         }
 
-        return findPhotoInDirectory(currentDirectory, pathParts[pathParts.length - 1]);
+        return findPhotoInDirectory(currentDirectory, location.getFileName());
+    }
+
+    public MemoryDirectory getOrCreateDirectory(final String location) {
+        final Iterable<String> directoryNames = Splitter.on('/').omitEmptyStrings().split(location);
+
+        MemoryDirectory currentDirectory = root;
+        for (final String directoryName : directoryNames) {
+            Directory subdirectory = findSubdirectory(currentDirectory, directoryName);
+            if (subdirectory == null) {
+                subdirectory = currentDirectory.addSubdirectory(directoryName);
+            }
+            currentDirectory = (MemoryDirectory) subdirectory;
+        }
+
+        return currentDirectory;
+    }
+
+    public void addPhoto(final String location, final MemoryPhoto photo) {
+        final MemoryDirectory directory = getOrCreateDirectory(location);
+        directory.addPhoto(photo);
     }
 
     private Directory findSubdirectory(final Directory directory, final String subdirectoryName) {
@@ -45,7 +64,7 @@ class MemoryStorage implements Storage {
 
     private Photo findPhotoInDirectory(final Directory directory, final String name) {
         for (final Photo photo : directory.getPhotos()) {
-            if (photo.getLocation().endsWith(name)) {
+            if (photo.getName().equals(name)) {
                 return photo;
             }
         }

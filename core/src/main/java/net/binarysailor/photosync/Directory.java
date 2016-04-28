@@ -5,6 +5,8 @@ package net.binarysailor.photosync;
  */
 public interface Directory {
 
+    Directory getParent();
+
     String getName();
 
     Directory[] getSubdirectories();

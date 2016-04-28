@@ -5,7 +5,9 @@ package net.binarysailor.photosync;
  */
 public interface Photo {
 
-    String getLocation();
+    String getName();
+
+    Directory getDirectory();
 
     long getSize();
 }
