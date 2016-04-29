@@ -1,26 +1,50 @@
 package net.binarysailor.photosync;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.Serializable;
 
 /**
  * Created by binarysailor on 28/04/2016.
  */
-public class DirectoryStoragePointer {
-    private final @Nullable String path;
+public class DirectoryStoragePointer implements Serializable {
+    static final char SEPARATOR = '/';
 
-    public DirectoryStoragePointer(final String path) {
-        this.path = path;
+    private final @Nonnull String[] directoryNames;
+
+    public DirectoryStoragePointer(@Nullable final String path) {
+        final String cleanedUp;
+
+        if (path != null) {
+            final StringBuilder s = new StringBuilder(path);
+            while (s.length() > 0 && s.charAt(0) == SEPARATOR) {
+                s.deleteCharAt(0);
+            }
+            if (s.length() == 0) {
+                directoryNames = new String[0];
+            } else {
+                directoryNames = Iterables.toArray(
+                        Splitter.on(SEPARATOR).omitEmptyStrings().split(s.toString()),
+                        String.class);
+            }
+        } else {
+            directoryNames = new String[0];
+        }
+    }
+
+    public DirectoryStoragePointer(@Nonnull final String[] directoryNames) {
+        this.directoryNames = directoryNames;
     }
 
     public @Nonnull String[] getDirectoryNames() {
-        if (path == null) {
-            return new String[0];
-        }
+        return directoryNames;
+    }
 
-        return Iterables.toArray(Splitter.on(Locations.SEPARATOR).omitEmptyStrings().split(path), String.class);
+    public String toString() {
+        return Joiner.on(SEPARATOR).join(directoryNames);
     }
 }

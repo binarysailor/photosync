@@ -25,10 +25,10 @@ public class FilesystemIndex implements Index {
     }
 
     @Override
-    public void storeHash(final Directory directory, final Photo photo, final String hash) throws IndexException {
+    public void storeHash(final Photo photo, final String hash) throws IndexException {
         File hashFile = getHashFile(hash);
         try {
-            Files.append(Locations.getFullPhotoLocation(directory, photo) + "\n", hashFile, Charset.forName("UTF-8"));
+            Files.append(Locations.getFileStoragePointer(photo) + "\n", hashFile, Charset.forName("UTF-8"));
         } catch (IOException e) {
             throw new IndexException(e);
         }

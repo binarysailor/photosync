@@ -44,6 +44,7 @@ class MemoryDirectory implements Directory {
 
     public void addPhoto(final MemoryPhoto photo) {
         photos.add(photo);
+        photo.setDirectory(this);
     }
 
     @Override

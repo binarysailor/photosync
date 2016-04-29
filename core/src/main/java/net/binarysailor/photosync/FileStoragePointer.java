@@ -1,9 +1,11 @@
 package net.binarysailor.photosync;
 
+import java.io.Serializable;
+
 /**
  * Created by binarysailor on 28/04/2016.
  */
-public class FileStoragePointer {
+public class FileStoragePointer implements Serializable {
 
     private final DirectoryStoragePointer directoryPointer;
     private final String fileName;
@@ -15,7 +17,7 @@ public class FileStoragePointer {
 
     @Override
     public String toString() {
-        return String.valueOf(directoryPointer) + Locations.SEPARATOR + String.valueOf(fileName);
+        return String.valueOf(directoryPointer) + DirectoryStoragePointer.SEPARATOR + String.valueOf(fileName);
     }
 
     public DirectoryStoragePointer getDirectoryPointer() {
