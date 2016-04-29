@@ -3,6 +3,10 @@ package net.binarysailor.photosync.index;
 import net.binarysailor.photosync.Directory;
 import net.binarysailor.photosync.Photo;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by binarysailor on 25/04/2016.
  */
@@ -37,5 +41,14 @@ class MemoryPhoto implements Photo {
 
     public void setDirectory(final Directory directory) {
         this.directory = directory;
+    }
+
+    @Override
+    public InputStream getContent() {
+        try {
+            return new ByteArrayInputStream(name.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            return new ByteArrayInputStream(new byte[0]);
+        }
     }
 }

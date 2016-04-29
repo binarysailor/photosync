@@ -1,6 +1,6 @@
 package net.binarysailor.photosync;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -38,5 +38,14 @@ class FileSystemPhoto implements Photo {
     @Override
     public FileSystemDirectory getDirectory() {
         return directory;
+    }
+
+    @Override
+    public InputStream getContent() {
+        try {
+            return new FileInputStream(ioFile);
+        } catch (FileNotFoundException e) {
+            return new ByteArrayInputStream(new byte[0]);
+        }
     }
 }
