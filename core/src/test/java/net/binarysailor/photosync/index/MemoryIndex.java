@@ -28,4 +28,8 @@ public class MemoryIndex implements Index {
     public FileStoragePointer findPhotoByHash(final String hash) throws IndexException {
         return data.get(hash);
     }
+
+    public int getSize() {
+        return data.size();
+    }
 }

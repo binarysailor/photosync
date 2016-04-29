@@ -2,6 +2,7 @@ package net.binarysailor.photosync.index;
 
 import net.binarysailor.photosync.Directory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -11,6 +12,14 @@ public class IndexingCommand {
     private @Nullable Directory startingPoint;
     private @Nullable Integer maxBatchSize;
 
+    public IndexingCommand() {
+        this.startingPoint = null;
+    }
+
+    public IndexingCommand(final @Nonnull Directory startingPoint) {
+        this.startingPoint = startingPoint;
+    }
+
     @Nullable
     public Directory getStartingPoint() {
         return startingPoint;
@@ -19,5 +28,9 @@ public class IndexingCommand {
     @Nullable
     public Integer getMaxBatchSize() {
         return maxBatchSize;
+    }
+
+    public void setMaxBatchSize(@Nullable final Integer maxBatchSize) {
+        this.maxBatchSize = maxBatchSize;
     }
 }
