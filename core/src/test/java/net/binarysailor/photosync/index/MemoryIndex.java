@@ -11,11 +11,16 @@ import java.util.Map;
  */
 public class MemoryIndex implements Index {
 
+    private final Storage storage;
     private final Map<String, FileStoragePointer> data = new HashMap<>();
+
+    public MemoryIndex(final Storage storage) {
+        this.storage = storage;
+    }
 
     @Override
     public void storeHash(final Photo photo, final String hash) throws IndexException {
-        final FileStoragePointer fileStoragePointer = Locations.getFileStoragePointer(photo);
+        final FileStoragePointer fileStoragePointer = Locations.getFileStoragePointer(storage, photo);
         data.put(hash, fileStoragePointer);
     }
 

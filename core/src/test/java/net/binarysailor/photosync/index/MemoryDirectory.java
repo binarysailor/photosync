@@ -51,4 +51,31 @@ class MemoryDirectory implements Directory {
     public Photo[] getPhotos() {
         return photos.toArray(new Photo[0]);
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof MemoryDirectory)) {
+            return false;
+        }
+
+        final MemoryDirectory other = (MemoryDirectory)obj;
+        if (this.parent == null) {
+            return other.parent == null && this.name.equals(other.name);
+        } else {
+            return this.parent.equals(other.parent) && this.name.equals(other.name);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        if (parent == null) {
+            return name.hashCode();
+        } else {
+            return 7 * parent.hashCode() + 11 * name.hashCode();
+        }
+    }
 }

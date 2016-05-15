@@ -18,7 +18,6 @@ public class IndexerTest {
     private Storage emptyStorage;
 
     private HashCalculator hashCalculator;
-    private MemoryIndex index;
 
     @BeforeSuite
     public void setupTestSuite() {
@@ -39,17 +38,13 @@ public class IndexerTest {
         };
     }
 
-    @BeforeMethod
-    public void beforeTest() {
-        index = new MemoryIndex();
-    }
-
     @Test
     public void shouldIndexThreeItems() throws IndexException {
 
         final IndexingCommand command = new IndexingCommand();
         command.setMaxBatchSize(3);
 
+        final MemoryIndex index = new MemoryIndex(hierarchicalStorage);
         final Indexer indexer = new Indexer(hierarchicalStorage, index, hashCalculator, command);
 
         indexer.run();
@@ -65,6 +60,7 @@ public class IndexerTest {
         final IndexingCommand command = new IndexingCommand();
         command.setMaxBatchSize(100);
 
+        final MemoryIndex index = new MemoryIndex(hierarchicalStorage);
         final Indexer indexer = new Indexer(hierarchicalStorage, index, hashCalculator, command);
 
         indexer.run();
@@ -80,6 +76,7 @@ public class IndexerTest {
         final IndexingCommand command = new IndexingCommand(hierarchicalStorage.getRoot().getSubdirectories()[0]);
         command.setMaxBatchSize(100);
 
+        final MemoryIndex index = new MemoryIndex(hierarchicalStorage);
         final Indexer indexer = new Indexer(hierarchicalStorage, index, hashCalculator, command);
 
         indexer.run();
@@ -95,6 +92,7 @@ public class IndexerTest {
         final IndexingCommand command = new IndexingCommand();
         command.setMaxBatchSize(100);
 
+        final MemoryIndex index = new MemoryIndex(singleLevelStorage);
         final Indexer indexer = new Indexer(singleLevelStorage, index, hashCalculator, command);
 
         indexer.run();
@@ -109,6 +107,7 @@ public class IndexerTest {
     public void shouldNotFailOnEmptyStorage() {
         final IndexingCommand command = new IndexingCommand();
 
+        final MemoryIndex index = new MemoryIndex(emptyStorage);
         final Indexer indexer = new Indexer(emptyStorage, index, hashCalculator, command);
 
         indexer.run();

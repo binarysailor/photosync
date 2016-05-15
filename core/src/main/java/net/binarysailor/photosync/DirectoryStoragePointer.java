@@ -16,6 +16,10 @@ public class DirectoryStoragePointer implements Serializable {
 
     private final @Nonnull String[] directoryNames;
 
+    public static DirectoryStoragePointer createRootPointer() {
+        return new DirectoryStoragePointer(new String[0]);
+    }
+
     public DirectoryStoragePointer(@Nullable final String path) {
         final String cleanedUp;
 

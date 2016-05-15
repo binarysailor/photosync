@@ -19,7 +19,6 @@ class FileSystemDirectory implements Directory {
     private final FileSystemDirectory parent;
     private final @Nonnull File ioDirectory;
 
-
     public static FileSystemDirectory createRoot(final FileSystemStorage storage, final String absoluteDiskPath) throws DirectoryNotFoundException {
         return new FileSystemDirectory(storage, absoluteDiskPath);
     }
@@ -94,5 +93,23 @@ class FileSystemDirectory implements Directory {
 
     String getFileSystemPath() {
         return ioDirectory.getAbsolutePath();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof FileSystemDirectory)) {
+            return false;
+        }
+
+        return this.ioDirectory.equals(((FileSystemDirectory)obj).ioDirectory);
+    }
+
+    @Override
+    public int hashCode() {
+        return ioDirectory.hashCode();
     }
 }

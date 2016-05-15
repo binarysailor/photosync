@@ -1,10 +1,7 @@
 package net.binarysailor.photosync.index;
 
 import com.google.common.base.Splitter;
-import net.binarysailor.photosync.Directory;
-import net.binarysailor.photosync.FileStoragePointer;
-import net.binarysailor.photosync.Photo;
-import net.binarysailor.photosync.Storage;
+import net.binarysailor.photosync.*;
 
 /**
  * Created by binarysailor on 25/04/2016.

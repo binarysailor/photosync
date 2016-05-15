@@ -3,6 +3,8 @@ package net.binarysailor.photosync;
 import com.google.common.base.Joiner;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by binarysailor on 11/04/2016.

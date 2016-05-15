@@ -67,6 +67,9 @@ class Indexer implements Runnable {
         for (final Photo photo : photos) {
             try {
                 final String hash = hashCalculator.calculateHash(photo);
+                if (index.findPhotoByHash(hash) != null) {
+                    continue;
+                }
                 index.storeHash(photo, hash);
             } catch (final IndexException e) {
                 LogFactory.getLog(getClass()).warn(e, e);

@@ -28,7 +28,7 @@ public class FilesystemIndex implements Index {
     public void storeHash(final Photo photo, final String hash) throws IndexException {
         File hashFile = getHashFile(hash);
         try {
-            Files.append(Locations.getFileStoragePointer(photo) + "\n", hashFile, Charset.forName("UTF-8"));
+            Files.write(Locations.getFileStoragePointer(storage, photo) + "\n", hashFile, Charset.forName("UTF-8"));
         } catch (IOException e) {
             throw new IndexException(e);
         }
@@ -44,7 +44,7 @@ public class FilesystemIndex implements Index {
             try {
                 String photoPath = Files.readFirstLine(hashFile, Charset.forName("UTF-8"));
                 if (photoPath != null) {
-                    pointer = null; // TODO Locations.createRelative(photoPath);
+                    pointer = new FileStoragePointer(storage, photoPath);
                 } else {
                     pointer = null;
                 }
