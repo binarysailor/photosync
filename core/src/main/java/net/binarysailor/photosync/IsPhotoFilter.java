@@ -17,6 +17,8 @@ public class IsPhotoFilter implements FileFilter {
     static {
         EXTENSIONS.add("jpeg");
         EXTENSIONS.add("JPEG");
+        EXTENSIONS.add("jpg");
+        EXTENSIONS.add("JPG");
     }
 
     public static boolean isPhoto(final File file) {

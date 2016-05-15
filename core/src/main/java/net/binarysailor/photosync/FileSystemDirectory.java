@@ -36,7 +36,7 @@ class FileSystemDirectory implements Directory {
         this.storage = storage;
         this.parent = parent;
 
-        final String path = parent.getFileSystemPath() + File.pathSeparator + shortName;
+        final String path = parent.getFileSystemPath() + File.separator + shortName;
         ioDirectory = new File(path);
 
         assertDirectoryExists();

@@ -11,4 +11,8 @@ public class DirectoryNotFoundException extends IOException {
     DirectoryNotFoundException(final String requestedPath) {
         this.requestedPath = requestedPath;
     }
+
+    public String getRequestedPath() {
+        return requestedPath;
+    }
 }

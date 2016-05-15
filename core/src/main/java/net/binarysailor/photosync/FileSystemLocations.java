@@ -8,6 +8,6 @@ import java.io.File;
 public class FileSystemLocations {
 
     public static String getFileSystemPath(final FileSystemStorage storage, final FileSystemPhoto photo) {
-        return photo.getDirectory().getFileSystemPath() + File.pathSeparator + photo.getName();
+        return photo.getDirectory().getFileSystemPath() + File.separator + photo.getName();
     }
 }

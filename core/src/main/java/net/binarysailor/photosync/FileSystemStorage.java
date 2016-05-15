@@ -28,7 +28,7 @@ class FileSystemStorage implements Storage {
     public Photo findPhoto(final FileStoragePointer pointer) {
         final File file = new File(
                 getRootPath()
-                        + File.pathSeparator
+                        + File.separator
                         + toFileSystemDirectoryPath(pointer.getDirectoryPointer())
                         + pointer.getFileName());
         if (IsPhotoFilter.isPhoto(file)) {
@@ -44,7 +44,7 @@ class FileSystemStorage implements Storage {
     }
 
     private String toFileSystemDirectoryPath(final DirectoryStoragePointer directoryPointer) {
-        return Joiner.on(File.pathSeparatorChar).join(directoryPointer.getDirectoryNames());
+        return Joiner.on(File.separatorChar).join(directoryPointer.getDirectoryNames());
     }
 
     private FileSystemDirectory buildFileSystemDirectory(final DirectoryStoragePointer pointer) throws DirectoryNotFoundException {

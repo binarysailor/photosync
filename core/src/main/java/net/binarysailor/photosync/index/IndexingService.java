@@ -34,4 +34,8 @@ public class IndexingService {
     public void stop() {
         executorService.shutdown();
     }
+
+    public void runOnce(final IndexingCommand command) {
+        new Indexer(storage, index, hashCalculator, command).run();
+    }
 }
